@@ -1,90 +1,57 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Pagination from "../components/Pagination";
-import customerAPI from "../services/customerAPI";
 
-const CustomersPage = (props) => {
+const CustomersPageWithPagination = (props) => {
   const [customers, setCustomers] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  //permet de récupérer les customers
-  const fetchCustomers = async () => {
-    try {
-      const data = await customerAPI.findAll();
-      setCustomers(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
-
-  // Au chargement du composant on va chercher les customers
   useEffect(() => {
-    fetchCustomers();
-  }, []);
+    axios
+      .get(
+        `http://localhost:8000/api/customers?pagination=true&count=${itemsPerPage}&page=${currentPage}`
+      )
+      //.then((response) => console.log(response.data["hydra:member"]));
+      .then((response) => {
+        setCustomers(response.data["hydra:member"]);
+        setTotalItems(response.data["hydra:totalItems"]);
+        setLoading(false);
+      })
+      .catch((derror) => console.log(error.response));
+  }, [currentPage]);
 
-  // Gestion de suppression d'un customer
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     const originalCustomers = customers.slice();
+
     setCustomers(customers.filter((customer) => customer.id !== id));
 
-    try {
-      await customerAPI.delete(id);
-    } catch (error) {
-      setCustomers(originalCustomers);
-      console.log(error.response);
-    }
+    axios
+      .delete("http://localhost:8000/api/customes/" + id)
+      .then((response) => console.log(response))
+      .catch((error) => {
+        setCustomers(originalCustomers);
+        console.log(error.response);
+      });
   };
 
-  // Gestion du changement de page
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    setLoading(false);
-  };
-
-  // Gestion de la recherche
-  // avant refactorisation ...
-  //const handleSearch = (event) => {
-  //  const value = event.currentTarget.value;
-  //  setSearch(value);
-  const handleSearch = ({ currentTarget }) => {
-    setSearch(currentTarget.value);
-    setCurrentPage(1);
+    setLoading(true);
   };
 
   const itemsPerPage = 10;
 
-  // Filtrage des customers en fonction de la recherche
-  const filteredCustomers = customers.filter(
-    (c) =>
-      c.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      c.lastName.toLowerCase().includes(search.toLowerCase()) ||
-      c.email.toLowerCase().includes(search.toLowerCase()) ||
-      (c.company && c.company.toLowerCase().includes(search.toLowerCase()))
-  );
-
-  //pagination des données
   const paginatedCustomers = Pagination.getData(
-    filteredCustomers,
+    customers,
     currentPage,
     itemsPerPage
   );
 
   return (
     <>
-      <h1>Liste des clients</h1>
-
-      <div className="form-group">
-        <input
-          type="text"
-          onChange={handleSearch}
-          value={search}
-          className="form-control"
-          placeholder="rechercher..."
-        />
-      </div>
-
+      <h1>Liste des clients (Pagination)</h1>
       <table className="table table-hover">
         <thead>
           <tr>
@@ -104,7 +71,7 @@ const CustomersPage = (props) => {
             </tr>
           )}
           {!loading &&
-            paginatedCustomers.map((customer) => (
+            customers.map((customer) => (
               <tr key={customer.id}>
                 <td>{customer.id}</td>
                 <td>
@@ -133,16 +100,14 @@ const CustomersPage = (props) => {
             ))}
         </tbody>
       </table>
-      {itemsPerPage < filteredCustomers.length && (
-        <Pagination
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          length={filteredCustomers.length}
-          onPageChanged={handlePageChange}
-        />
-      )}
+      <Pagination
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        length={totalItems}
+        onPageChanged={handlePageChange}
+      />
     </>
   );
 };
 
-export default CustomersPage;
+export default CustomersPageWithPagination;

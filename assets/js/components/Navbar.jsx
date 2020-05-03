@@ -37,7 +37,7 @@ const Navbar = (props) => {
               Inscription
             </a>
           </li>
-          <li className="nav-item">
+          <li className="nav-item mr-1">
             <a href="#" className="btn btn-success">
               Connexion !
             </a>
