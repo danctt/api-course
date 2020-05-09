@@ -44,7 +44,7 @@ const CustomersPage = (props) => {
   };
 
   // Gestion de la recherche
-  // avant refactorisation ...
+  // avant déstructuration ...
   //const handleSearch = (event) => {
   //  const value = event.currentTarget.value;
   //  setSearch(value);

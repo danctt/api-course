@@ -1,0 +1,19 @@
+Thibaut Decherit
+2 mois depuis
+Pas de soucis :)
+
+Voici un exemple d'implémentation :
+https://github.com/lexik/LexikJWTAuthenticationBundle/issues/646#issuecomment-590422947
+
+Partant de là vous avez juste à POST les credentials comme vous le faites déjà, 
+mais vous n'avez pas besoin d'exploiter en JS la réponse pour autre chose que savoir si c'est un succès ou non. 
+En effet, si c'est un succès la réponse du serveur contiendra un header qui set automatiquement le cookie dans le navigateur et vous êtes bons.
+
+Pensez juste à passer le booléen secure à false et à enlever : 
+ * "__Host-" du nom du cookie dans le listener ET 
+ * dans la config du bundle si votre serveur de dev n'est pas en HTTPS.
+Sinon le navigateur risque d'ignorer le header et de ne pas set le cookie.
+
+Et si vous voulez un serveur de dev en HTTPS, histoire qu'il ressemble plus à l'environnement de production (vu que le HTTPS c'est la norme ;D) c'est par ici : 
+https://symfony.com/doc/current/setup/symfony_server.html
+
