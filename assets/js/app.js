@@ -6,10 +6,10 @@
  */
 // any CSS you import will output into a single css file (app.css in this case)
 //Les imports importants
+import "../css/app.css";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { HashRouter, Route, Switch, withRouter } from "react-router-dom";
-import "../css/app.css";
 import Navbar from "./components/NavBar";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthContext from "./contexts/AuthContext";
@@ -19,6 +19,8 @@ import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
 import AuthAPI from "./services/authAPI";
 import CustomerPage from "./pages/CustomerPage";
+import InvoicePage from "./pages/InvoicePage";
+import RegisterPage from "./pages/RegisterPage";
 
 //import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
 
@@ -46,8 +48,10 @@ const App = () => {
         <main className="container pt-5">
           <Switch>
             <Route path="/login" component={LoginPage} />
+            <Route path="/register" component={RegisterPage} />
             <PrivateRoute path="/customers/:id" component={CustomerPage} />
             <PrivateRoute path="/customers" component={CustomersPage} />
+            <PrivateRoute path="/invoices/:id" component={InvoicePage} />
             <PrivateRoute path="/invoices" component={InvoicesPage} />
             <Route path="/" component={HomePage} />
           </Switch>

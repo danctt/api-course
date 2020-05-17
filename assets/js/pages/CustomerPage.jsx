@@ -22,7 +22,7 @@ const CustomerPage = ({ match, history }) => {
 
   const [editing, setEditing] = useState(false);
 
-  // récupération du custome en fonction de l'identifiant
+  // récupération du customer en fonction de l'identifiant
   const fetchCustomer = async (id) => {
     try {
       const { lastName, firstName, email, company } = await customerAPI.find(
