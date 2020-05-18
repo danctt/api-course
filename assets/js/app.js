@@ -21,6 +21,8 @@ import AuthAPI from "./services/authAPI";
 import CustomerPage from "./pages/CustomerPage";
 import InvoicePage from "./pages/InvoicePage";
 import RegisterPage from "./pages/RegisterPage";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //import CustomersPageWithPagination from "./pages/CustomersPageWithPagination";
 
@@ -57,6 +59,7 @@ const App = () => {
           </Switch>
         </main>
       </HashRouter>
+      <ToastContainer position={toast.POSITION.TOP_CENTER} autoClose={2000} />
     </AuthContext.Provider>
   );
 };

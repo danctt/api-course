@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import customerAPI from "../services/customerAPI";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import CustomersLoader from "../components/loaders/CustomersLoader";
 
 const CustomersPage = (props) => {
   const [customers, setCustomers] = useState([]);
@@ -16,7 +18,7 @@ const CustomersPage = (props) => {
       setCustomers(data);
       setLoading(false);
     } catch (error) {
-      console.log(error.response);
+      toast.error("Impossible de charger les clients !");
     }
   };
 
@@ -32,9 +34,10 @@ const CustomersPage = (props) => {
 
     try {
       await customerAPI.delete(id);
+      toast.success("Le client a bien été supprimé");
     } catch (error) {
+      toast.error("Le client n'a pas pu être supprimé !");
       setCustomers(originalCustomers);
-      console.log(error.response);
     }
   };
 
@@ -104,17 +107,13 @@ const CustomersPage = (props) => {
           </tr>
         </thead>
         <tbody>
-          {loading && (
-            <tr>
-              <td>... Chargement ...</td>
-            </tr>
-          )}
           {!loading &&
             paginatedCustomers.map((customer) => (
               <tr key={customer.id}>
-                <td>{customer.id}</td>
                 <td>
-                  {customer.firstName} {customer.lastName}
+                  <Link to={"/customers/" + customer.id}>
+                    {customer.firstName} {customer.lastName}
+                  </Link>
                 </td>
                 <td>{customer.email}</td>
                 <td>{customer.company}</td>
@@ -139,6 +138,7 @@ const CustomersPage = (props) => {
             ))}
         </tbody>
       </table>
+      {loading && <CustomersLoader />}
       {itemsPerPage < filteredCustomers.length && (
         <Pagination
           currentPage={currentPage}

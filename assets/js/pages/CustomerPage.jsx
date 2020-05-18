@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
 import customerAPI from "../services/customerAPI";
+import { toast } from "react-toastify";
+import FormLoader from "../components/loaders/FormLoader";
 
 const CustomerPage = ({ match, history }) => {
   const { id = "new" } = match.params;
@@ -19,7 +21,7 @@ const CustomerPage = ({ match, history }) => {
     email: "",
     company: "",
   });
-
+  const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
 
   // récupération du customer en fonction de l'identifiant
@@ -29,8 +31,9 @@ const CustomerPage = ({ match, history }) => {
         id
       );
       setCustomer({ lastName, firstName, email, company });
+      setLoading(false);
     } catch (error) {
-      // TO DO : Notification d'une erreur
+      toast.error("Le client n'a pas pu être chargé !");
       history.replace("/customers");
     }
   };
@@ -38,6 +41,7 @@ const CustomerPage = ({ match, history }) => {
   // chargement du customer si besoin au chargement du composant ou au changement de l'identifiant
   useEffect(() => {
     if (id !== "new") {
+      setLoading(true);
       setEditing(true);
       fetchCustomer(id);
     }
@@ -54,16 +58,15 @@ const CustomerPage = ({ match, history }) => {
     event.preventDefault();
 
     try {
+      setErrors({});
       if (editing) {
         await customerAPI.update(id, customer);
-        // flash notification de Succès
+        toast.success("Le client a bien été modifié");
       } else {
         await customerAPI.create(customer);
-
-        // flash notification de Succès
+        toast.success("Le client a bien été créé");
         history.replace("/customers");
       }
-      setErrors({});
     } catch ({ response }) {
       const { violations } = response.data;
       if (violations) {
@@ -72,7 +75,7 @@ const CustomerPage = ({ match, history }) => {
           apiErrors[propertyPath] = message;
         });
         setErrors(apiErrors);
-        // TO DO : flash notification d'erreur
+        toast.error("Des erreurs dans votre formaulaire !");
       }
     }
   };
@@ -82,51 +85,55 @@ const CustomerPage = ({ match, history }) => {
       {(!editing && <h1>Création d'un client</h1>) || (
         <h1>Modification d'un client</h1>
       )}
-
-      <form onSubmit={handleSubmit}>
-        <Field
-          name="lastName"
-          label="Nom de famille"
-          placeholder="Nom de famille du client"
-          value={customer.lastName}
-          onChange={handleChange}
-          error={errors.lastName}
-        />
-        <Field
-          name="firstName"
-          label="Prénom"
-          placeholder="Prénom du client"
-          value={customer.firstName}
-          onChange={handleChange}
-          error={errors.firstName}
-        />
-        <Field
-          name="email"
-          label="Email"
-          placeholder="Adresse email du client"
-          type="email"
-          value={customer.email}
-          error={errors.lastName}
-          onChange={handleChange}
-          error={errors.email}
-        />
-        <Field
-          name="company"
-          label="Entreprise"
-          placeholder="Entreprise du client"
-          value={customer.company}
-          onChange={handleChange}
-          error={errors.company}
-        />
-        <div className="form-group">
-          <button type="submit" className="btn btn-success">
-            Enregistrer
-          </button>
-          <Link to="/customers" className="btn btn-link">
-            Retour à la liste
-          </Link>
-        </div>
-      </form>
+      <br />
+      <br />
+      {!loading && (
+        <form onSubmit={handleSubmit}>
+          <Field
+            name="lastName"
+            label="Nom de famille"
+            placeholder="Nom de famille du client"
+            value={customer.lastName}
+            onChange={handleChange}
+            error={errors.lastName}
+          />
+          <Field
+            name="firstName"
+            label="Prénom"
+            placeholder="Prénom du client"
+            value={customer.firstName}
+            onChange={handleChange}
+            error={errors.firstName}
+          />
+          <Field
+            name="email"
+            label="Email"
+            placeholder="Adresse email du client"
+            type="email"
+            value={customer.email}
+            error={errors.lastName}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <Field
+            name="company"
+            label="Entreprise"
+            placeholder="Entreprise du client"
+            value={customer.company}
+            onChange={handleChange}
+            error={errors.company}
+          />
+          <div className="form-group">
+            <button type="submit" className="btn btn-success">
+              Enregistrer
+            </button>
+            <Link to="/customers" className="btn btn-link">
+              Retour à la liste
+            </Link>
+          </div>
+        </form>
+      )}
+      {loading && <FormLoader />}
     </>
   );
 };
