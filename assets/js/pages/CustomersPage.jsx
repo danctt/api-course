@@ -97,7 +97,7 @@ const CustomersPage = (props) => {
       <table className="table table-hover">
         <thead>
           <tr>
-            <th>Id.</th>
+            <th>id.</th>
             <th>Client</th>
             <th>Email</th>
             <th>Entreprise</th>
@@ -110,6 +110,7 @@ const CustomersPage = (props) => {
           {!loading &&
             paginatedCustomers.map((customer) => (
               <tr key={customer.id}>
+                <td>{customer.id}</td>
                 <td>
                   <Link to={"/customers/" + customer.id}>
                     {customer.firstName} {customer.lastName}
