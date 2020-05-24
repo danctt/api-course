@@ -17,7 +17,11 @@ class InvoiceIncrementationController
 
     public function __invoke(Invoice $data)
     {
-        $data->setChrono($data->getChrono() + 1);
+        if ($data->getChrono() < 1) {
+            $data->setChrono(1);
+        } else {
+            $data->setChrono($data->getChrono() + 1);
+        }
 
         $this->manager->flush();
 

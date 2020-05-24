@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Field from "../components/forms/Field";
 import { Link } from "react-router-dom";
-import UsersApi from "../services/usersAPI";
-import usersAPI from "../services/usersAPI";
 import { toast } from "react-toastify";
+import Field from "../components/forms/Field";
+import usersAPI from "../services/usersAPI";
 
 const registerPage = ({ history }) => {
   const [user, setUser] = useState({
@@ -38,6 +37,7 @@ const registerPage = ({ history }) => {
       setErrors(apiErrors);
       toast.error("Des erreurs dans votre formulaire d'inscription !");
       return;
+      console.log(user);
     }
     try {
       await usersAPI.register(user);
@@ -46,7 +46,8 @@ const registerPage = ({ history }) => {
       //Notification de succès
       toast.success("Vous êtes enregistré, vous povez vous connecter");
     } catch (error) {
-      const { violations } = error.response.data;
+      console.log(error.response);
+      const { violations } = error.response;
 
       if (violations) {
         violations.forEach((violation) => {

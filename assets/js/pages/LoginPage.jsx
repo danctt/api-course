@@ -35,7 +35,6 @@ const LoginPage = ({ history }) => {
       );
       toast.error("Une erreur est survenue !");
     }
-    console.log(credentials);
   };
 
   return (

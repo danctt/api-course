@@ -19,7 +19,7 @@ const CustomersPageWithPagination = (props) => {
         setTotalItems(response.data["hydra:totalItems"]);
         setLoading(false);
       })
-      .catch((derror) => console.log(error.response));
+      .catch((error) => console.log(error.response));
   }, [currentPage]);
 
   const handleDelete = (id) => {
