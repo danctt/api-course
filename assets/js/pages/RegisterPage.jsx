@@ -37,7 +37,6 @@ const registerPage = ({ history }) => {
       setErrors(apiErrors);
       toast.error("Des erreurs dans votre formulaire d'inscription !");
       return;
-      console.log(user);
     }
     try {
       await usersAPI.register(user);
@@ -46,7 +45,6 @@ const registerPage = ({ history }) => {
       //Notification de succès
       toast.success("Vous êtes enregistré, vous povez vous connecter");
     } catch (error) {
-      console.log(error.response);
       const { violations } = error.response;
 
       if (violations) {
@@ -58,7 +56,6 @@ const registerPage = ({ history }) => {
         toast.error("Des erreurs dans votre formulaire d'inscription !");
       }
     }
-    console.log(user);
   };
 
   return (
