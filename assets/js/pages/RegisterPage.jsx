@@ -43,7 +43,7 @@ const registerPage = ({ history }) => {
       setErrors({});
       history.replace("/login");
       //Notification de succès
-      toast.success("Vous êtes enregistré, vous povez vous connecter");
+      toast.success("Vous êtes enregistré, vous pouvez vous connecter");
     } catch (error) {
       const { violations } = error.response;
 
